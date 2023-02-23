@@ -1,29 +1,23 @@
 function createPlayer(name, symbol) {
   return {
-    name: name,
-    symbol: symbol,
+    name,
+    symbol,
   };
 }
 
-const createGameBoard = () => {
-  return [
-    [0, 0, 0],
-    [0, 0, 0],
-    [0, 0, 0],
-  ];
-};
+const createGameBoard = () => [
+  [0, 0, 0],
+  [0, 0, 0],
+  [0, 0, 0],
+];
 
-const getRow = () => {
-  return parseInt(prompt('input row number'));
-};
+const getRow = () => parseInt(prompt('input row number'));
 
-const getColumn = () => {
-  return parseInt(prompt('input column number'));
-};
+const getColumn = () => parseInt(prompt('input column number'));
 
 const updateBoard = (row, col, currentPlayer, gameboard) => {
   // copy the gameboard
-  const gameboardCopy = Object.assign({}, gameboard); // make a copy of an object
+  const gameboardCopy = { ...gameboard }; // make a copy of an object
   // modify the copy
   gameboardCopy[row][col] = currentPlayer.symbol;
   // return the copy
@@ -33,9 +27,8 @@ const updateBoard = (row, col, currentPlayer, gameboard) => {
 const getNextPlayer = (currentPlayer, player1, player2) => {
   if (currentPlayer === player1) {
     return player2;
-  } else {
-    return player1;
   }
+  return player1;
 };
 
 (function controller() {
@@ -46,31 +39,29 @@ const getNextPlayer = (currentPlayer, player1, player2) => {
 
   // set up initial board
   let gameboard = createGameBoard();
-  console.log(
-    '🚀 ~ file: script.js:49 ~ controller ~ gameboard:',
-    JSON.stringify(gameboard)
-  );
 
   // game loop
   // 1. take a turn
   // 2. check if there's a winner
   // 3. if not, repeat
   let gameOver = false;
+
   debugger;
+
   while (!gameOver) {
     const newGameboard = takeATurn(gameboard, currentPlayer);
     gameboard = newGameboard;
     gameOver = checkForWinner();
     currentPlayer = getNextPlayer(currentPlayer, player1, player2);
   }
-})();
+}());
 
 function takeATurn(gameboard, currentPlayer) {
   const newGameBoard = updateBoard(
     getRow(),
     getColumn(),
     currentPlayer,
-    gameboard
+    gameboard,
   );
   return newGameBoard;
 }
