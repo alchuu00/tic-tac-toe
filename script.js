@@ -12,6 +12,7 @@ const createGameboard = () => {
 
 const updateBoard = (square, currentPlayer) => {
   square.textContent = currentPlayer.symbol;
+  square.classList.add(`${currentPlayer.symbol}`);
   square.setAttribute('data-symbol', currentPlayer.symbol);
 };
 
@@ -52,8 +53,8 @@ const checkForWinner = (gameboard) => {
 
 // START GAME
 (function gameController() {
-  const player1 = createPlayer('Player 1', 'X');
-  const player2 = createPlayer('Player 2', 'O');
+  const player1 = createPlayer('Player 1', '✕');
+  const player2 = createPlayer('Player 2', '♡');
 
   let currentPlayer = player1;
 
