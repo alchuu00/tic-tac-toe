@@ -12,7 +12,7 @@ const createGameboard = () => {
 
 const updateBoard = (square, currentPlayer) => {
   square.textContent = currentPlayer.symbol;
-  square.classList.add(`${currentPlayer.symbol}`);
+  square.setAttribute('id', `${currentPlayer.symbol}`);
   square.setAttribute('data-symbol', currentPlayer.symbol);
 };
 
@@ -51,6 +51,30 @@ const checkForWinner = (gameboard) => {
   return false;
 };
 
+const displayPlayerWon = (currentPlayerName, modal, text) => {
+  console.log('remove class hidden');
+  modal.classList.remove('hidden');
+  text.textContent = `${currentPlayerName} won!`;
+};
+
+const displayDraw = (modal, text) => {
+  modal.classList.remove('hidden');
+  text.textContent = "It's a draw!";
+};
+
+const restartGame = (modal, squares) => {
+  const retryBtn = document.querySelector('.retry-btn');
+  retryBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    console.log('retry btn clicked');
+    squares.forEach((square) => {
+      square.textContent = '';
+      square.removeAttribute('data-symbol');
+      square.removeAttribute('id');
+    });
+  });
+};
+
 // START GAME
 (function gameController() {
   const player1 = createPlayer('Player 1', '✕');
@@ -66,6 +90,8 @@ const checkForWinner = (gameboard) => {
   // 2. check if there's a winner or a draw
   // 3. if not, repeat
   const squares = document.querySelectorAll('.square');
+  const modal = document.querySelector('.modal-overlay');
+  const text = document.querySelector('.modal > h2');
   let numTurnsTaken = 0;
   squares.forEach((square) => {
     square.addEventListener('click', () => {
@@ -75,11 +101,17 @@ const checkForWinner = (gameboard) => {
 
         if (checkForWinner(gameboard)) {
           console.log(`${currentPlayer.name} wins!`);
+          displayPlayerWon(currentPlayer.name, modal, text);
+          restartGame(modal, squares);
+          numTurnsTaken = 0;
           return;
         }
 
         if (numTurnsTaken === squares.length) {
           console.log("It's a draw!");
+          displayDraw(modal, text);
+          restartGame(modal, squares);
+          numTurnsTaken = 0;
           return;
         }
 

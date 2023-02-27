@@ -9,6 +9,8 @@ body {
   align-items: center;
   font-family: 'Tilt Neon', cursive;
   background-color: rgb(0, 0, 51);
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -36,12 +38,12 @@ body {
   background-color: rgb(10, 10, 59);
 }
 
-.✕ {
+#✕ {
   color: aqua;
   text-shadow: 0 0 15px aqua;
 }
 
-.♡ {
+#♡ {
   color:violet;
   text-shadow: 0 0 15px violet;
 }
@@ -57,6 +59,7 @@ body {
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  
 }
 
 .modal {
@@ -68,10 +71,42 @@ body {
 }
 
 .close-btn {
-  background-color: #fff;
+  color: white;
+  background-color: black;
   font-family: 'Tilt Neon', cursive;
   border: none;
   padding: 10px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.close-btn:hover {
+  background-color: rgb(58, 58, 58);
+}
+
+.hidden {
+  display:none;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #feffaa;
+  position: absolute;
+  bottom: 5px;
+  font-size: 12px;
+}
+
+svg {
+  height: 15px;
+  width: 15px;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: none;
+  margin-right: 10px;
+  fill: #feffaa;
+}
+
+svg:hover {
+  transform: rotate(360deg);
 }
