@@ -23,6 +23,32 @@ const getNextPlayer = (currentPlayer, player1, player2) => {
   return player1;
 };
 
+const computerMove = (gameboard, currentPlayer, numTurnsTaken, modal, text, squares, player1, player2) => {
+  // find an empty square to move in
+  const emptySquares = Array.from(gameboard).filter((square) => !square.hasAttribute('data-symbol'));
+  const chosenSquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
+  updateBoard(chosenSquare, currentPlayer);
+  numTurnsTaken++;
+
+  if (checkForWinner(gameboard)) {
+    console.log(`${currentPlayer.name} wins!`);
+    displayPlayerWon(currentPlayer.name, modal, text);
+    restartGame(modal, squares);
+    numTurnsTaken = 0;
+    return;
+  }
+
+  if (numTurnsTaken === squares.length) {
+    console.log("It's a draw!");
+    displayDraw(modal, text);
+    restartGame(modal, squares);
+    numTurnsTaken = 0;
+    return;
+  }
+
+  currentPlayer = getNextPlayer(currentPlayer, player1, player2);
+};
+
 const checkForWinner = (gameboard) => {
   const winningCombinations = [
     [0, 1, 2],
@@ -93,6 +119,7 @@ const restartGame = (modal, squares) => {
   const modal = document.querySelector('.modal-overlay');
   const text = document.querySelector('.modal > h2');
   let numTurnsTaken = 0;
+
   squares.forEach((square) => {
     square.addEventListener('click', () => {
       if (!square.hasAttribute('data-symbol')) {
@@ -116,6 +143,10 @@ const restartGame = (modal, squares) => {
         }
 
         currentPlayer = getNextPlayer(currentPlayer, player1, player2);
+
+        if (currentPlayer === player2) {
+          setTimeout(computerMove(gameboard, currentPlayer, numTurnsTaken, modal, text, squares, player1, player2), 1000);
+        }
       }
     });
   });
