@@ -17,7 +17,7 @@ const updateBoard = (square, currentPlayer) => {
 };
 
 const computerTurn = (gameboard, square, currentPlayer) => {
-  const emptySquares = gameboard.filter(square => !square.hasAttribute('data-symbol'));
+  const emptySquares = gameboard.filter((square) => !square.hasAttribute('data-symbol'));
   const randomIndex = Math.floor(Math.random() * emptySquares.length);
   const randomSquare = emptySquares[randomIndex];
   updateBoard(randomSquare, currentPlayer);
@@ -96,60 +96,96 @@ const restartGame = (modal, squares) => {
   // 2. check if there's a winner or a draw
   // 3. if not, repeat
   const squares = document.querySelectorAll('.square');
-  const modal = document.querySelector('.modal-overlay');
+  const modalGameOver = document.querySelector('.modal-game-over');
+  const modalGameStart = document.querySelector('.modal-game-start');
   const text = document.querySelector('.modal > h2');
+  const pvpBtn = document.querySelector('.pvp');
+  const pvcBtn = document.querySelector('.pvc');
+
   let numTurnsTaken = 0;
 
-  squares.forEach((square) => {
-    square.addEventListener('click', () => {
-      if (!square.hasAttribute('data-symbol')) {
-        updateBoard(square, currentPlayer);
-        numTurnsTaken++;
+  pvpBtn.addEventListener('click', () => {
+    modalGameStart.classList.add('hidden');
+    squares.forEach((square) => {
+      square.addEventListener('click', () => {
+        if (!square.hasAttribute('data-symbol')) {
+          updateBoard(square, currentPlayer);
+          numTurnsTaken++;
 
-        if (checkForWinner(gameboard)) {
-          console.log(`${currentPlayer.name} wins!`);
-          displayPlayerWon(currentPlayer.name, modal, text);
-          restartGame(modal, squares);
-          numTurnsTaken = 0;
-          return;
+          if (checkForWinner(gameboard)) {
+            console.log(`${currentPlayer.name} wins!`);
+            displayPlayerWon(currentPlayer.name, modalGameOver, text);
+            restartGame(modalGameOver, squares);
+            numTurnsTaken = 0;
+            return;
+          }
+
+          if (numTurnsTaken === squares.length) {
+            console.log("It's a draw!");
+            displayDraw(modalGameOver, text);
+            restartGame(modalGameOver, squares);
+            numTurnsTaken = 0;
+            return;
+          }
+
+          currentPlayer = getNextPlayer(currentPlayer, player1, player2);
         }
+      });
+    });
+  });
 
-        if (numTurnsTaken === squares.length) {
-          console.log("It's a draw!");
-          displayDraw(modal, text);
-          restartGame(modal, squares);
-          numTurnsTaken = 0;
-          return;
+  pvcBtn.addEventListener('click', () => {
+    modalGameStart.classList.add('hidden');
+    squares.forEach((square) => {
+      square.addEventListener('click', () => {
+        if (!square.hasAttribute('data-symbol')) {
+          updateBoard(square, currentPlayer);
+          numTurnsTaken++;
+
+          if (checkForWinner(gameboard)) {
+            console.log(`${currentPlayer.name} wins!`);
+            displayPlayerWon(currentPlayer.name, modalGameOver, text);
+            restartGame(modalGameOver, squares);
+            numTurnsTaken = 0;
+            return;
+          }
+
+          if (numTurnsTaken === squares.length) {
+            console.log("It's a draw!");
+            displayDraw(modalGameOver, text);
+            restartGame(modalGameOver, squares);
+            numTurnsTaken = 0;
+            return;
+          }
+
+          currentPlayer = getNextPlayer(currentPlayer, player1, player2);
+
+          if (currentPlayer === player2) {
+            setTimeout(() => {
+              computerTurn(gameboard, square, currentPlayer);
+              numTurnsTaken++;
+
+              if (checkForWinner(gameboard)) {
+                console.log(`${currentPlayer.name} wins!`);
+                displayPlayerWon(currentPlayer.name, modalGameOver, text);
+                restartGame(modalGameOver, squares);
+                numTurnsTaken = 0;
+                return;
+              }
+
+              if (numTurnsTaken === squares.length) {
+                console.log("It's a draw!");
+                displayDraw(modalGameOver, text);
+                restartGame(modalGameOver, squares);
+                numTurnsTaken = 0;
+                return;
+              }
+
+              currentPlayer = getNextPlayer(currentPlayer, player1, player2);
+            }, 500);
+          }
         }
-
-        currentPlayer = getNextPlayer(currentPlayer, player1, player2);
-
-        if (currentPlayer === player2) {
-          setTimeout(() => {
-            computerTurn(gameboard, square, currentPlayer);
-            numTurnsTaken++;
-
-            if (checkForWinner(gameboard)) {
-              console.log(`${currentPlayer.name} wins!`);
-              displayPlayerWon(currentPlayer.name, modal, text);
-              restartGame(modal, squares);
-              numTurnsTaken = 0;
-              return;
-            }
-
-            if (numTurnsTaken === squares.length) {
-              console.log("It's a draw!");
-              displayDraw(modal, text);
-              restartGame(modal, squares);
-              numTurnsTaken = 0;
-              return;
-            }
-
-            currentPlayer = getNextPlayer(currentPlayer, player1, player2);
-          }, 500);
-        }
-      }
+      });
     });
   });
 }());
-
