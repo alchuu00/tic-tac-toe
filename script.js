@@ -16,37 +16,18 @@ const updateBoard = (square, currentPlayer) => {
   square.setAttribute('data-symbol', currentPlayer.symbol);
 };
 
+const computerTurn = (gameboard, square, currentPlayer) => {
+  const emptySquares = gameboard.filter(square => !square.hasAttribute('data-symbol'));
+  const randomIndex = Math.floor(Math.random() * emptySquares.length);
+  const randomSquare = emptySquares[randomIndex];
+  updateBoard(randomSquare, currentPlayer);
+};
+
 const getNextPlayer = (currentPlayer, player1, player2) => {
   if (currentPlayer === player1) {
     return player2;
   }
   return player1;
-};
-
-const computerMove = (gameboard, currentPlayer, numTurnsTaken, modal, text, squares, player1, player2) => {
-  // find an empty square to move in
-  const emptySquares = Array.from(gameboard).filter((square) => !square.hasAttribute('data-symbol'));
-  const chosenSquare = emptySquares[Math.floor(Math.random() * emptySquares.length)];
-  updateBoard(chosenSquare, currentPlayer);
-  numTurnsTaken++;
-
-  if (checkForWinner(gameboard)) {
-    console.log(`${currentPlayer.name} wins!`);
-    displayPlayerWon(currentPlayer.name, modal, text);
-    restartGame(modal, squares);
-    numTurnsTaken = 0;
-    return;
-  }
-
-  if (numTurnsTaken === squares.length) {
-    console.log("It's a draw!");
-    displayDraw(modal, text);
-    restartGame(modal, squares);
-    numTurnsTaken = 0;
-    return;
-  }
-
-  currentPlayer = getNextPlayer(currentPlayer, player1, player2);
 };
 
 const checkForWinner = (gameboard) => {
@@ -101,7 +82,6 @@ const restartGame = (modal, squares) => {
   });
 };
 
-// START GAME
 (function gameController() {
   const player1 = createPlayer('Player 1', '✕');
   const player2 = createPlayer('Player 2', '♡');
@@ -145,9 +125,31 @@ const restartGame = (modal, squares) => {
         currentPlayer = getNextPlayer(currentPlayer, player1, player2);
 
         if (currentPlayer === player2) {
-          setTimeout(computerMove(gameboard, currentPlayer, numTurnsTaken, modal, text, squares, player1, player2), 1000);
+          setTimeout(() => {
+            computerTurn(gameboard, square, currentPlayer);
+            numTurnsTaken++;
+
+            if (checkForWinner(gameboard)) {
+              console.log(`${currentPlayer.name} wins!`);
+              displayPlayerWon(currentPlayer.name, modal, text);
+              restartGame(modal, squares);
+              numTurnsTaken = 0;
+              return;
+            }
+
+            if (numTurnsTaken === squares.length) {
+              console.log("It's a draw!");
+              displayDraw(modal, text);
+              restartGame(modal, squares);
+              numTurnsTaken = 0;
+              return;
+            }
+
+            currentPlayer = getNextPlayer(currentPlayer, player1, player2);
+          }, 500);
         }
       }
     });
   });
 }());
+
