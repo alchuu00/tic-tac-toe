@@ -61,6 +61,23 @@ body {
   z-index: 9999;
 }
 
+.fly-in {
+  opacity: 0;
+  transform: translateY(50px);
+  animation: appear 1s ease forwards;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .modal-game-over {
   position: fixed;
   top: 0;

@@ -104,6 +104,10 @@ const restartGame = (modal, squares) => {
 
   let numTurnsTaken = 0;
 
+  window.onload = function() {
+    modalGameStart.classList.add('fly-in');
+  };
+
   pvpBtn.addEventListener('click', () => {
     modalGameStart.classList.add('hidden');
     squares.forEach((square) => {
